@@ -6,7 +6,6 @@ namespace icnt86 {
 
 static const char *const TAG = "icnt86";
 
-
 void ICNT86Touchscreen::setup() {
   ESP_LOGCONFIG(TAG, "Setting up icnt86 Touchscreen...");
 
@@ -24,7 +23,6 @@ void ICNT86Touchscreen::setup() {
   this->x_raw_max_ = this->display_->get_native_width();
   this->y_raw_max_ = this->display_->get_native_height();
 
-  this->conversion_to_resolution_ = false;
   // Trigger initial read to activate the interrupt
   this->store_.touched = true;
 }
@@ -80,9 +78,13 @@ void ICNT86Touchscreen::dump_config() {
   LOG_PIN("  Reset Pin: ", this->reset_pin_);
 }
 
-void ICNT86Touchscreen::icnt_read_(uint16_t reg, char const *data, uint16_t len) { this->i2c_read_byte_(reg, data, len); }
+void ICNT86Touchscreen::icnt_read_(uint16_t reg, char const *data, uint8_t len) {
+  this->i2c_read_byte_(reg, data, len);
+}
 
-void ICNT86Touchscreen::icnt_write_(uint16_t reg, char const *data, uint16_t len) { this->i2c_write_byte_(reg, data, len); }
+void ICNT86Touchscreen::icnt_write_(uint16_t reg, char const *data, uint8_t len) {
+  this->i2c_write_byte_(reg, data, len);
+}
 void ICNT86Touchscreen::i2c_read_byte_(uint16_t reg, char const *data, uint8_t len) {
   this->i2c_write_byte_(reg, nullptr, 0);
   this->read((uint8_t *) data, len);
